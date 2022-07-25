@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --ignore ./frontend/ server.js",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
+    "start": "node server",
+    "dev": "nodemon --ignore ./my-app/ server.js"
   },
   "repository": {
     "type": "git",

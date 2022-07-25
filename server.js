@@ -1,3 +1,3 @@
 const App = require("./backend/App.js")
-
-App.listen(9000, () => console.log("Server running on port 9000"));
+const PORT = process.env.PORT || 9000;
+App.listen(PORT, () => console.log("Server running on port "+PORT));
