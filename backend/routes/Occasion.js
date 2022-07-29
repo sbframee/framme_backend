@@ -20,13 +20,13 @@ const upload = multer({ storage });
 
 router.post("/postOccasion", async (req, res) => {
   try {
-    let value = req.body.value;
-    value = JSON.parse(value);
+    let value = req.body;
+    // value = JSON.parse(value);
     // console.log(value)
     if (!value) res.json({ success: false, message: "Invalid Data" });
 
-    // console.log(value)
-    const response = await Occasion.create(...value);
+    console.log(value)
+    const response = await Occasion.create(value);
     if (response) {
       res.json({ success: true, result: response });
     } else res.json({ success: false, message: "Occasion Not created" });
