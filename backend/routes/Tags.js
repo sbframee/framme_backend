@@ -18,13 +18,14 @@ const upload = multer({ storage });
 
 router.post("/tagImages", upload.single('images'), async (req, res) => {
     try {
-        let value = req.body.value
+        let value = req.body
+        
         if (!value) res.json({ success: false, message: "Invalid Data" })
-        value = JSON.parse(value)
+        // value = JSON.parse(value)
         // console.log(req.body)
         // let Thumbnail_url = req.files?.thumbnail?.length ? `thumbnail/${JSON.parse(JSON.stringify(req.files))?.thumbnail[0]?.originalname}` : "@
 
-        value = req.file ? { ...value, img_url: `/images/${req.file.originalname}` } : value
+        // value = req.file ? { ...value, img_url: `/images/${req.file.originalname}` } : value
         let data = await Image.find({ tag_uuid: value.tag_uuid, sort_order: value.sort_order })
         let response
         if (data.length) {
