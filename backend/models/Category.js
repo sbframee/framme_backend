@@ -15,7 +15,7 @@ const CategorySchema = new mongoose.Schema({
     status: {
         type: String,
     },
-    Thumbnail_url:{
+    thumbnail_url:{
         type: String,
 
     },

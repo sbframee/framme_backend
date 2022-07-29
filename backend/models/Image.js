@@ -5,6 +5,9 @@ const imageSchema = new mongoose.Schema({
         type: String,
 
     },
+    thumbnail_url: {
+        type: String,
+    },
     img_type: {
         type: String,
 

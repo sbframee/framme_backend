@@ -1,46 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
+
 const Image = require("../models/Image");
 const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === "thumbnail") cb(null, "./uploads/thumbnail");
-    else cb(null, "./uploads/images");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+router.post("/postImage", async (req, res) => {
+  try {
+    let value = req.body;
+    console.log(value);
 
-const upload = multer({ storage });
-
-router.post(
-  "/postImage",
-  upload.fields([{ name: "image" }, { name: "thumbnail" }]),
-  async (req, res) => {
-    try {
-      let value = req.body.value;
-      console.log(req.files)
-      value = JSON.parse(value);
-      // console.log("value", value)
-      const response = await Image.create({
-        ...value,
-        img_url: JSON.parse(JSON.stringify(req.files))?.image?.length
-          ? `/images/${
-              JSON.parse(JSON.stringify(req.files)).image[0].originalname
-            }`
-          : value.img_url,
-      });
-      // console.log(response)
-      if (response) res.json({ success: true, result: response });
-      else res.json({ success: false, message: "Image not updated" });
-    } catch (err) {
-      res.status(500).json({ err });
-    }
+    const response = await Image.create(value);
+    console.log(response);
+    if (response) res.json({ success: true, result: response });
+    else res.json({ success: false, message: "Image not updated" });
+  } catch (err) {
+    res.status(500).json({ err });
   }
-);
+});
 
 router.put("/putImage", async (req, res) => {
   try {

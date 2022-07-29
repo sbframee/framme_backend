@@ -11,6 +11,9 @@ const UserSubCategory = require("./routes/userSubCategory");
 const holderTemplate = require("./routes/HoldersTemplate");
 const Posters = require("./routes/Posters");
 const cors = require("cors");
+const generateUploadURL = require("./s3");
+
+
 app = express();
 app.use(
     cors({
@@ -33,7 +36,10 @@ app.use("/userSubCategory", UserSubCategory);
 app.use("/holderTemplate", holderTemplate);
 app.use("/posters", Posters);
 
-
+app.get('/s3Url',async(req,res)=>{
+  const url = await generateUploadURL()
+  res.send({url})
+})
 
 
 app.use(express.static("uploads"));

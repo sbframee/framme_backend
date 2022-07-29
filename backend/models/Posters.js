@@ -5,6 +5,10 @@ const PosterSchema = new mongoose.Schema({
     {
       type: String,
     },
+  posters_uuid: 
+    {
+      type: String,
+    },
   expiry: 
     {
       type: Number,

@@ -1,44 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
+
 const Poster = require("../models/Posters");
-const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === "thumbnail") cb(null, "./uploads/thumbnail");
-    else cb(null, "./uploads/posters");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+router.post("/postPosters", async (req, res) => {
+  try {
+    let value = req.body;
 
-const upload = multer({ storage });
-
-router.post(
-  "/postPosters",
-  upload.fields([{ name: "posters" }, { name: "thumbnail" }]),
-  async (req, res) => {
-    try {
-      let value = req.body.value;
-      console.log(JSON.stringify(req.files))
-      value = JSON.parse(value);
-      // console.log("value", value)
-      const response = await Poster.create({
-        ...value,
-        posters: `/posters/${
-          JSON.parse(JSON.stringify(req.files)).posters[0].originalname
-        }`,
-      });
-      // console.log(response)
-      if (response) res.json({ success: true, result: response });
-      else res.json({ success: false, message: "Image not updated" });
-    } catch (err) {
-      res.status(500).json({ err });
-    }
+    console.log("value", value);
+    const response = await Poster.create(value);
+    console.log(response)
+    if (response) res.json({ success: true, result: response });
+    else res.json({ success: false, message: "Image not updated" });
+  } catch (err) {
+    res.status(500).json({ err });
   }
-);
+});
 
 router.put("/putPoster", async (req, res) => {
   try {
@@ -54,9 +31,9 @@ router.put("/putPoster", async (req, res) => {
 });
 router.get("/getPoster", async (req, res) => {
   try {
-    let time = new Date()
-    const response = await Poster.find({ expiry: { $gte: time.getTime() }});
-    // console.log(response)
+    let time = new Date();
+    const response = await Poster.find({ expiry: { $gte: time.getTime() } });
+    console.log(response)
     if (response) res.json({ success: true, result: response });
     else res.json({ success: false, message: "Image not found" });
   } catch (err) {

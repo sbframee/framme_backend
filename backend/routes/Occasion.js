@@ -18,19 +18,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/postOccasion", upload.single("thumbnail"), async (req, res) => {
+router.post("/postOccasion", async (req, res) => {
   try {
     let value = req.body.value;
     value = JSON.parse(value);
     // console.log(value)
     if (!value) res.json({ success: false, message: "Invalid Data" });
-    let thumbnail_url = req.file ? `thumbnail/${req.file.originalname}` : "";
 
     // console.log(value)
-    const response = await Occasion.create({ ...value, thumbnail_url });
+    const response = await Occasion.create(...value);
     if (response) {
-      if (req.file)
-        await Image.create({ img_type: "OT", occ_uuid: value, thumbnail_url });
       res.json({ success: true, result: response });
     } else res.json({ success: false, message: "Occasion Not created" });
   } catch (err) {
@@ -110,10 +107,10 @@ router.get("/getOccasion/:occ_uuid", async (req, res) => {
   }
 });
 
-router.put("/putOccasion", upload.single("thumbnail"), async (req, res) => {
+router.put("/putOccasion", async (req, res) => {
   try {
-    let value = req.body.value;
-    value = JSON.parse(value);
+    let value = req.body;
+
     value = Object.keys(value)
       .filter((key) => key !== "_id")
       .reduce((obj, key) => {
@@ -121,23 +118,13 @@ router.put("/putOccasion", upload.single("thumbnail"), async (req, res) => {
         return obj;
       }, {});
     if (!value) res.json({ success: false, message: "Invalid Data" });
-    let thumbnail_url = req.file ? `thumbnail/${req.file.originalname}` : "";
-
+    console.log(value);
     const response = await Occasion.updateOne(
       { occ_uuid: value.occ_uuid },
-      { ...value, thumbnail_url }
+      value
     );
 
     if (response.acknowledged) {
-      if (req.file) {
-        console.log(thumbnail_url);
-        let response1 = await Image.updateOne(
-          { "occ_uuid.occ_uuid": value.occ_uuid },
-          { img_url: thumbnail_url }
-        );
-        // let response1 = await Image.create({ img_type: "OT", occ_uuid: value, thumbnail_url });
-        console.log(response1);
-      }
       res.json({ success: true, result: value });
     } else res.json({ success: false, message: "Occasion Not updated" });
   } catch (err) {
