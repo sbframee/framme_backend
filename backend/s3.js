@@ -1,9 +1,9 @@
 const aws = require("aws-sdk");
 const { v4: uuid } = require("uuid");
 const region = "ap-south-1";
-const bucketName = "uploadframee";
-const accessKeyId = "AKIAV4F7GLME6WOSL4EC";
-const secretAccessKey = "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";
+const bucketName = "framme-media";
+const accessKeyId = "AKIA5GXQUKAU5IXTRQGS";
+const secretAccessKey = "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";
 
 const s3 = new aws.S3({
   region,
@@ -23,4 +23,6 @@ const generateUploadURL = async () => {
   return uploadURL;
 };
 
+
 module.exports = generateUploadURL;
+
