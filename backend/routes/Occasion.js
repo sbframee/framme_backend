@@ -49,6 +49,7 @@ router.post("/getOccasionsUser", async (req, res) => {
     let { user_category_uuid, user_sub_category_uuid } = req.body;
     user_category_uuid = JSON.parse(user_category_uuid);
     user_sub_category_uuid = JSON.parse(user_sub_category_uuid);
+    console.log(user_category_uuid,user_sub_category_uuid)
     let result = [];
     let response = await Image.find({ img_type: "B" });
     response = JSON.parse(JSON.stringify(response));
@@ -61,7 +62,7 @@ router.post("/getOccasionsUser", async (req, res) => {
             ).length
           ) {
             if (user_sub_category_uuid?.length) {
-              if (item.user_sub_category_uuid.length) {
+              if (item.user_sub_category_uuid?.length) {
                 if (
                   item.user_sub_category_uuid.filter(
                     (a) => user_sub_category_uuid.filter((b) => a === b).length
@@ -69,7 +70,8 @@ router.post("/getOccasionsUser", async (req, res) => {
                 )
                   result.push(item);
               } else result.push(item);
-            } else result = response;
+            } else 
+            result = response;
           }
         } else result.push(item);
       }

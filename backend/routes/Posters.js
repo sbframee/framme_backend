@@ -9,7 +9,7 @@ router.post("/postPosters", async (req, res) => {
 
     console.log("value", value);
     const response = await Poster.create(value);
-    console.log(response)
+    console.log(response);
     if (response) res.json({ success: true, result: response });
     else res.json({ success: false, message: "Image not updated" });
   } catch (err) {
@@ -33,8 +33,24 @@ router.get("/getPoster", async (req, res) => {
   try {
     let time = new Date();
     const response = await Poster.find({ expiry: { $gte: time.getTime() } });
-    console.log(response)
+    // console.log(response);
     if (response) res.json({ success: true, result: response });
+    else res.json({ success: false, message: "Image not found" });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+});
+router.delete("/deletePoster", async (req, res) => {
+  try {
+    let value = req.body;
+    console.log(value)
+    let response = [];
+    for (let item of value) {
+      const responsedata = await Poster.deleteOne({ posters: item.posters });
+      if (responsedata.acknowledged) response.push(item);
+    }
+    console.log(response);
+    if (response.length) res.json({ success: true, result: response });
     else res.json({ success: false, message: "Image not found" });
   } catch (err) {
     res.status(500).json({ err });
