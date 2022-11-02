@@ -25,7 +25,7 @@ router.post("/postOccasion", async (req, res) => {
     // console.log(value)
     if (!value) res.json({ success: false, message: "Invalid Data" });
 
-    console.log(value)
+    console.log(value);
     const response = await Occasion.create(value);
     if (response) {
       res.json({ success: true, result: response });
@@ -49,33 +49,35 @@ router.post("/getOccasionsUser", async (req, res) => {
     let { user_category_uuid, user_sub_category_uuid } = req.body;
     user_category_uuid = JSON.parse(user_category_uuid);
     user_sub_category_uuid = JSON.parse(user_sub_category_uuid);
-    console.log(user_category_uuid,user_sub_category_uuid)
+    console.log(user_category_uuid, user_sub_category_uuid);
     let result = [];
     let response = await Image.find({ img_type: "B" });
     response = JSON.parse(JSON.stringify(response));
     if (user_category_uuid?.length) {
-      for (let item of response) {
-        if (item.user_category_uuid.length) {
+      for (let a of response) {
+        if (a.user_category_uuid.length) {
           if (
-            item.user_category_uuid.filter(
+            a.user_category_uuid.filter(
               (a) => user_category_uuid.filter((b) => a === b).length
             ).length
           ) {
-            if (user_sub_category_uuid?.length) {
-              if (item.user_sub_category_uuid?.length) {
-                if (
-                  item.user_sub_category_uuid.filter(
-                    (a) => user_sub_category_uuid.filter((b) => a === b).length
-                  ).length
-                )
-                  result.push(item);
-              } else result.push(item);
-            } else 
-            result = response;
+            if (
+              user_sub_category_uuid?.length &&
+              a.user_sub_category_uuid?.length
+            ) {
+              if (
+                a.user_sub_category_uuid.filter(
+                  (a) => user_sub_category_uuid.filter((b) => a === b).length
+                ).length
+              ) {
+                result.push(a);
+              }
+            } else result.push(a);
           }
-        } else result.push(item);
+        } else result.push(a);
       }
     } else result = response;
+
     let time = new Date();
     let occasion = await Occasion.find({
       status: "1",
@@ -91,7 +93,7 @@ router.post("/getOccasionsUser", async (req, res) => {
         ).length
     );
 
-    console.log("occasion", occasion);
+    // console.log("occasion", occasion);
     if (occasion.length) res.json({ success: true, result: occasion });
     else res.json({ success: false, message: "Occasion Not found" });
   } catch (err) {
