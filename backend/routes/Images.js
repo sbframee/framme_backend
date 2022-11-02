@@ -40,6 +40,16 @@ router.get("/getImages", async (req, res) => {
     res.status(500).json({ err });
   }
 });
+router.get("/getAllBaseImages", async (req, res) => {
+  try {
+    const response = await Image.find({img_type: "B"});
+    // console.log(response)
+    if (response) res.json({ success: true, result: response });
+    else res.json({ success: false, message: "Image not found" });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+});
 router.post("/getBaseImages", async (req, res) => {
   try {
     const { user_category_uuid } = req.body;
