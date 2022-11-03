@@ -1,17 +1,17 @@
 const express = require("express");
-const connectDB = require("./config/mongoDb");
-const Images = require("./routes/Images")
-const Occasions = require("./routes/Occasion")
-const Tags = require("./routes/Tags")
+const connectDB = require("./backend/config/mongoDb");
+const Images = require("./backend/routes/Images")
+const Occasions = require("./backend/routes/Occasion")
+const Tags = require("./backend/routes/Tags")
 const morgan = require("morgan");
-const Category = require("./routes/Category");
-const Users = require("./routes/Users");
-const UserCategory = require("./routes/UserCategory");
-const UserSubCategory = require("./routes/userSubCategory");
-const holderTemplate = require("./routes/HoldersTemplate");
-const Posters = require("./routes/Posters");
+const Category = require("./backend/routes/Category");
+const Users = require("./backend/routes/Users");
+const UserCategory = require("./backend/routes/UserCategory");
+const UserSubCategory = require("./backend/routes/userSubCategory");
+const holderTemplate = require("./backend/routes/HoldersTemplate");
+const Posters = require("./backend/routes/Posters");
 const cors = require("cors");
-const generateUploadURL = require("./s3");
+const generateUploadURL = require("./backend/s3");
 
 
 app = express();
@@ -43,5 +43,6 @@ app.get('/s3Url',async(req,res)=>{
 
 
 app.use(express.static("uploads"));
+
 
 module.exports = app;

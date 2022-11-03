@@ -2,8 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const Image = require("../models/Image");
-const fs = require("fs");
+var fs = require("fs"),
+  request = require("request");
+var download = function (uri, filename, callback) {
+  request.head(uri, function (err, res, body) {
+    console.log("content-type:", res.headers["content-type"]);
+    console.log("content-length:", res.headers["content-length"]);
 
+    request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
+  });
+};
 router.post("/postImage", async (req, res) => {
   try {
     let value = req.body;
@@ -42,7 +50,7 @@ router.get("/getImages", async (req, res) => {
 });
 router.get("/getAllBaseImages", async (req, res) => {
   try {
-    const response = await Image.find({img_type: "B"});
+    const response = await Image.find({ img_type: "B" });
     // console.log(response)
     if (response) res.json({ success: true, result: response });
     else res.json({ success: false, message: "Image not found" });
@@ -76,6 +84,35 @@ router.post("/getBaseImages", async (req, res) => {
   } catch (err) {
     res.status(500).json({ err });
   }
+});
+router.get("/getBaseImages/:img_url", async (req, res) => {
+  // try {
+  const { img_url } = req.params;
+
+  let response = await Image.findOne({
+    img_url: "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
+  });
+  response = JSON.parse(JSON.stringify(response));
+  if (response) {
+    download(
+      "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
+      "uploads/" + img_url + ".png",
+      function () {
+        res.json({
+          success: true,
+          result: {
+            ...response,
+            img_url: img_url + ".png",
+          },
+        });
+      }
+    );
+    console.log("uploads/" + img_url);
+    // setTimeout(() => fs.unlinkSync("uploads/"+img_url), 300000);
+  } else res.json({ success: false, message: "Image not found" });
+  // } catch (err) {
+  //   res.status(500).json({ err });
+  // }
 });
 router.delete("/deleteImages", async (req, res) => {
   try {
