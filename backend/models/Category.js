@@ -15,6 +15,9 @@ const CategorySchema = new mongoose.Schema({
     status: {
         type: String,
     },
+    square: {
+        type: Number,
+    },
     thumbnail_url:{
         type: String,
 
