@@ -99,9 +99,10 @@ router.get("/getBaseImages/:img_url", async (req, res) => {
         "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
         "uploads/" + img_url + ".png",
         function () {
+          console.log(img_url, new Date().now + 3600000);
           Temps.create({
-            image_name: img_url + ".png",
-            expire: new Date().now + 3600000,
+            img_name: img_url + ".png",
+            expire: new Date().getTime() + 3600000,
           });
           res.json({
             success: true,

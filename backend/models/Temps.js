@@ -4,7 +4,7 @@ const TempSchema = new mongoose.Schema({
   img_name: {
     type: String,
   },
-  expireed: {
+  expire: {
     type: Number,
   },
 });
