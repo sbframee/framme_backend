@@ -4,6 +4,7 @@ const router = express.Router();
 const Image = require("../models/Image");
 var fs = require("fs"),
   request = require("request");
+const Temps = require("../models/Temps");
 var download = function (uri, filename, callback) {
   request.head(uri, function (err, res, body) {
     console.log("content-type:", res.headers["content-type"]);
@@ -86,33 +87,37 @@ router.post("/getBaseImages", async (req, res) => {
   }
 });
 router.get("/getBaseImages/:img_url", async (req, res) => {
-  // try {
-  const { img_url } = req.params;
+  try {
+    const { img_url } = req.params;
 
-  let response = await Image.findOne({
-    img_url: "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
-  });
-  response = JSON.parse(JSON.stringify(response));
-  if (response) {
-    download(
-      "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
-      "uploads/" + img_url + ".png",
-      function () {
-        res.json({
-          success: true,
-          result: {
-            ...response,
-            img_url: img_url + ".png",
-          },
-        });
-      }
-    );
-    console.log("uploads/" + img_url);
-    // setTimeout(() => fs.unlinkSync("uploads/"+img_url), 300000);
-  } else res.json({ success: false, message: "Image not found" });
-  // } catch (err) {
-  //   res.status(500).json({ err });
-  // }
+    let response = await Image.findOne({
+      img_url: "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
+    });
+    response = JSON.parse(JSON.stringify(response));
+    if (response) {
+      download(
+        "https://framme-media.s3.ap-south-1.amazonaws.com/" + img_url,
+        "uploads/" + img_url + ".png",
+        function () {
+          Temps.create({
+            image_name: img_url + ".png",
+            expire: new Date().now + 3600000,
+          });
+          res.json({
+            success: true,
+            result: {
+              ...response,
+              img_url: img_url + ".png",
+            },
+          });
+        }
+      );
+      console.log("uploads/" + img_url);
+      // setTimeout(() => fs.unlinkSync("uploads/"+img_url), 300000);
+    } else res.json({ success: false, message: "Image not found" });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
 });
 router.delete("/deleteImages", async (req, res) => {
   try {
