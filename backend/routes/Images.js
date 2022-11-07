@@ -120,6 +120,15 @@ router.get("/getBaseImages/:img_url", async (req, res) => {
     res.status(500).json({ err });
   }
 });
+const deleteTempFile = async () => {
+  const temps = await Temps.find({});
+  for (let item of temps) {
+    if (item.expire < new Date().getTime())
+      fs.unlinkSync("uploads/" + item.img_name);
+  }
+};
+setTimeout(deleteTempFile, 3600000);
+
 router.delete("/deleteImages", async (req, res) => {
   try {
     const value = req.body;
