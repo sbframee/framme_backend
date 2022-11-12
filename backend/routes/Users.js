@@ -59,7 +59,7 @@ router.post("/varifyOtp", async (req, res) => {
         function (err, response) {
           if (err) throw err;
           if (response) {
-            Details.updateOne({}, { $inc: { sms_count: 1 } });
+            Details.updateMany({}, { $inc: { sms_count: 1 } }).then((a)=>console.log(a));
             res.json({ success: true, result: value });
           } else res.json({ success: false, message: "User Not created" });
         }
