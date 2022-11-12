@@ -3,6 +3,7 @@ const Users = require("../models/Users");
 const { v4: uuid } = require("uuid");
 const router = express.Router();
 const OTP = require("../Models/otp");
+const Details = require("../models/Details");
 var msg91 = require("msg91-templateid")(
   "312759AUCbnlpoZeD61714959P1",
   "foodDo",
@@ -58,6 +59,7 @@ router.post("/varifyOtp", async (req, res) => {
         function (err, response) {
           if (err) throw err;
           if (response) {
+            Details.updateOne({}, { $inc: { sms_count: 1 } });
             res.json({ success: true, result: value });
           } else res.json({ success: false, message: "User Not created" });
         }
@@ -96,14 +98,14 @@ router.post("/varifyUser", async (req, res) => {
   try {
     let { user_name, otp } = req.body;
 
-    const otpdata = await OTP.findOne({ user_mobile: "+91" +user_name, otp });
+    const otpdata = await OTP.findOne({ user_mobile: "+91" + user_name, otp });
     if (!otpdata) {
       res.json({ success: false, message: "OTP NOT VAlID" });
       return;
     }
     let data = await Users.findOne({ user_name });
     console.log(data, user_name);
-    await OTP.deleteOne({ user_mobile: "+91" +user_name, otp });
+    await OTP.deleteOne({ user_mobile: "+91" + user_name, otp });
     if (data) res.json({ success: true, result: data });
     else {
       let value = { user_name, user_uuid: uuid() };
