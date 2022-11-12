@@ -2,7 +2,7 @@ const express = require("express");
 const Users = require("../models/Users");
 const { v4: uuid } = require("uuid");
 const router = express.Router();
-const OTP = require("../Models/otp");
+const OTP = require("../models/otp");
 const Details = require("../models/Details");
 var msg91 = require("msg91-templateid")(
   "312759AUCbnlpoZeD61714959P1",
