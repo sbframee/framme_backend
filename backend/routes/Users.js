@@ -59,7 +59,9 @@ router.post("/varifyOtp", async (req, res) => {
         function (err, response) {
           if (err) throw err;
           if (response) {
-            Details.updateMany({}, { $inc: { sms_count: 1 } }).then((a)=>console.log(a));
+            Details.updateMany({}, { $inc: { sms_count: 1 } }).then((a) =>
+              console.log(a)
+            );
             res.json({ success: true, result: value });
           } else res.json({ success: false, message: "User Not created" });
         }
@@ -111,7 +113,7 @@ router.post("/varifyUser", async (req, res) => {
       let value = { user_name, user_uuid: uuid() };
       console.log(value);
       let response = await Users.create(value);
-      if (response) res.json({ success: true, result: value });
+      if (response) res.json({ success: true, result: value, new_user: true });
       else res.json({ success: false, message: "User Not found" });
     }
   } catch (err) {
