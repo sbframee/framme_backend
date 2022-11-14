@@ -28,6 +28,9 @@ const TagsSchema = new mongoose.Schema({
   scale: {
     type: String,
   },
+  circle: {
+    type: Boolean,
+  },
 });
 
 module.exports = mongoose.model("tags", TagsSchema);
