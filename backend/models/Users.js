@@ -16,6 +16,9 @@ const UsersSchema = new mongoose.Schema({
     }],
     user_sub_category_uuid: [{
         type: String
+    }],
+    tags: [{
+        type: String
     }]
 })
 
