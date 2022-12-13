@@ -60,6 +60,16 @@ router.get("/getAllBaseImages", async (req, res) => {
     res.status(500).json({ err });
   }
 });
+router.get("/getAllUIImages", async (req, res) => {
+  try {
+    const response = await Image.find({ img_type: "UI" });
+    // console.log(response)
+    if (response) res.json({ success: true, result: response });
+    else res.json({ success: false, message: "Image not found" });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+});
 router.post("/getBaseImages", async (req, res) => {
   try {
     const { user_category_uuid } = req.body;
@@ -131,29 +141,35 @@ const deleteTempFile = async () => {
 setTimeout(deleteTempFile, 3600000);
 
 router.delete("/deleteImages", async (req, res) => {
-  try {
-    const value = req.body;
-    fs.unlink(`./uploads/${value.img_url}`, (err) => {
-      console.log(err);
-    });
-    fs.unlink(
-      `./uploads/${value.img_url.replace("images", "thumbnail")}`,
-      (err) => {
+  // try {
+    const {item,user_uuid} = req.body;
+    let user = item.user.filter((a) => a !== user_uuid);
+    let response;
+    if (user.length) {
+      response = await Image.updateOne({ img_url: item.img_url }, { user });
+    } else {
+      fs.unlink(`./uploads/${item.img_url}`, (err) => {
         console.log(err);
-      }
-    );
-    // console.log(value)
-    const response = await Image.deleteOne({
-      img_url: value.img_url,
-      user: value.user[0],
-    });
+      });
+      fs.unlink(
+        `./uploads/${item.img_url.replace("images", "thumbnail")}`,
+        (err) => {
+          console.log(err);
+        }
+      );
+      console.log(user);
+      const response = await Image.deleteOne({
+        img_url: item.img_url,
+        user: item.user[0],
+      });
+    }
     // console.log(response)
-    if (response.acknowledged)
+    if (response)
       res.json({ success: true, result: "Deleted successfully" });
     else res.json({ success: false, message: "Image not found" });
-  } catch (err) {
-    res.status(500).json({ err });
-  }
+  // } catch (err) {
+  //   res.status(500).json({ err });
+  // }
 });
 
 module.exports = router;

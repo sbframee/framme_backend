@@ -131,7 +131,7 @@ router.post("/getUserTags", async (req, res) => {
         user: user_uuid,
       });
       response = JSON.parse(JSON.stringify(response));
-      console.log(response);
+      console.log(response.length);
       if (response[0]?.text) {
         data.push({ ...i, text: response });
       } else if (response[0]?.img_url) {
