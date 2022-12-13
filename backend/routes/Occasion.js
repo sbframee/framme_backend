@@ -35,9 +35,10 @@ router.post("/postOccasion", async (req, res) => {
   }
 });
 
-router.get("/getOccasions", async (req, res) => {
+router.get("/getOccasions/:status", async (req, res) => {
   try {
-    const response = await Occasion.find({ status: "1" });
+    const { status } = req.params;
+    const response = await Occasion.find(status?{ status }:{});
     if (response) res.json({ success: true, result: response });
     else res.json({ success: false, message: "Occasion Not found" });
   } catch (err) {

@@ -117,14 +117,15 @@ router.get("/getTags", async (req, res) => {
 router.post("/getUserTags", async (req, res) => {
   try {
     const { user_uuid } = req.body;
-    let userData = await Users.find({ user_uuid });
+    let userData = await Users.findOne({ user_uuid });
+ 
     let TagsData = await Tags.find(
       userData?.tags?.length ? { tag_uuid: { $in: userData.tags } } : {}
-    );
+      );
+  
     TagsData = JSON.parse(JSON.stringify(TagsData));
     let data = [];
     for (let i of TagsData) {
-      console.log(i.tag_uuid, user_uuid);
       let response = await Image.find({
         tag_uuid: i.tag_uuid,
         user: user_uuid,
