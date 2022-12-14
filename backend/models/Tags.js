@@ -31,6 +31,9 @@ const TagsSchema = new mongoose.Schema({
   circle: {
     type: Boolean,
   },
+  back: {
+    type: Boolean,
+  },
 });
 
 module.exports = mongoose.model("tags", TagsSchema);
