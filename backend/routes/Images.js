@@ -141,11 +141,11 @@ const deleteTempFile = async () => {
 setTimeout(deleteTempFile, 3600000);
 
 router.delete("/deleteImages", async (req, res) => {
-  // try {
-    const {item,user_uuid} = req.body;
-    let user = item.user.filter((a) => a !== user_uuid);
+  try {
+    const { item, user_uuid = "none" } = req.body;
+    let user = item?.user?.filter((a) => a !== user_uuid);
     let response;
-    if (user.length) {
+    if (user?.length) {
       response = await Image.updateOne({ img_url: item.img_url }, { user });
     } else {
       fs.unlink(`./uploads/${item.img_url}`, (err) => {
@@ -158,18 +158,43 @@ router.delete("/deleteImages", async (req, res) => {
         }
       );
       console.log(user);
-      const response = await Image.deleteOne({
+      response = await Image.deleteOne({
         img_url: item.img_url,
         user: item.user[0],
       });
     }
     // console.log(response)
-    if (response)
-      res.json({ success: true, result: "Deleted successfully" });
+    if (response) res.json({ success: true, result: "Deleted successfully" });
     else res.json({ success: false, message: "Image not found" });
-  // } catch (err) {
-  //   res.status(500).json({ err });
-  // }
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+});
+router.delete("/deleteAdminImages", async (req, res) => {
+  try {
+    const  item  = req.body;
+
+    fs.unlink(`./uploads/${item.img_url}`, (err) => {
+      console.log(err);
+    });
+    fs.unlink(
+      `./uploads/${item.img_url.replace("images", "thumbnail")}`,
+      (err) => {
+        console.log(err);
+      }
+    );
+    console.log(item);
+    const response = await Image.deleteOne({
+      img_url: item.img_url,
+      user: item.user[0],
+    });
+
+    // console.log(response)
+    if (response) res.json({ success: true, result: "Deleted successfully" });
+    else res.json({ success: false, message: "Image not found" });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
 });
 
 module.exports = router;
