@@ -12,6 +12,7 @@ const holderTemplate = require("./backend/routes/HoldersTemplate");
 const Posters = require("./backend/routes/Posters");
 const cors = require("cors");
 const generateUploadURL = require("./backend/s3");
+const contact_list = require("./backend/routes/contact_list");
 
 
 app = express();
@@ -35,6 +36,7 @@ app.use("/userCategory", UserCategory);
 app.use("/userSubCategory", UserSubCategory);
 app.use("/holderTemplate", holderTemplate);
 app.use("/posters", Posters);
+app.use("/contact_list", contact_list);
 
 app.get('/s3Url',async(req,res)=>{
   const url = await generateUploadURL()
